@@ -51,7 +51,9 @@
 #define HAVE_LIBINTL_H 1
 
 /* Define to 1 if you have the <mcheck.h> header file. */
+#ifndef __BUILD_LINUX_WITH_CLANG
 #define HAVE_MCHECK_H 1
+#endif
 
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
