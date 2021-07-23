@@ -57,16 +57,56 @@ Note:If the text contains special characters, please escape them according to th
 <configuration>
     <oatconfig>
         <licensefile>COPYING</licensefile>
+		<policylist>
+			<policy name="projectPolicy" desc="">
+				<policyitem type="compatibility" name="XConsortiumLicense" path=".*" desc="兼容licese"/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="/po/Makefile.in.in" desc="三方库构建配置脚本，自研代码中不使用。"/>
+                <policyitem type="compatibility" name="LGPLStyleLicense" path=".*" desc="三方库构建配置脚本，自研代码中不使用。"/>
+                <policyitem type="compatibility" name="FSFULLR|GPLStyleLicense-with-Libtool-exception" path=".*" desc="三方库构建配置脚本，自研代码中不使用。"/>
+                <policyitem type="compatibility" name="FSF Unlimited License" path=".*" desc="This file is free software。"/>
+			</policy>
+		</policylist>
+        <licensematcherlist>
+            <licensematcher name="MIT license" desc="If the scanning result is InvalidLicense, you can define matching rules here. Note that quotation marks must be escaped.">
+                <licensetext name=" Licensing details are in the COPYING" desc=""/>
+            </licensematcher>
+            <licensematcher name="FSF Unlimited License" desc="">
+                <licensetext name="
+                     This Makefile.in is free software; the Free Software Foundation
+                     gives unlimited permission to copy and/or distribute it,
+                     with or without modifications, as long as this notice is preserved.
+                " desc=""/>
+            </licensematcher>
+            <licensematcher name="FSF Unlimited License" desc="">
+                <licensetext name="
+                     Free software is going international!  The Free Translation Project is
+                     a way to get maintainers of free software, translators, and users all
+                     together, so that free software will gradually become able to speak many
+                     languages.  A few packages already provide translations for their
+                     messages.
+                " desc=""/>
+            </licensematcher>
+            <licensematcher name="MIT license" desc="">
+                <licensetext name="
+                     This file is distributed under the same license as the popt package.
+                " desc=""/>
+            </licensematcher>
+            <licensematcher name="MIT license" desc="">
+                <licensetext name=" 
+                     Licensing details are in the COPYING file" 
+                desc=""/>
+            </licensematcher>
+            <licensematcher name="FSF Unlimited License" desc="">
+                <licensetext name="
+                     Free Software Foundation, Inc.
+                     dnl This file is free software; the Free Software Foundation "
+                desc=""/>
+            </licensematcher>
+        </licensematcherlist>
         <filefilterlist>
-            <filefilter name="defaultPolicyFilter" desc="Filters for compatibility，license header policies">
-                <filteritem type="filename" name="README.OpenSource"/>
-                <filteritem type="filename" name="README"/>
-                <filteritem type="filename" name="helpers.h"  desc="not used in ohos"/>
-            </filefilter>
-            <filefilter name="copyrightPolicyFilter" desc="Filters for copyright header policies" >
-                <filteritem type="filename" name="README.OpenSource"/>
-                <filteritem type="filename" name="README"/>
-            </filefilter>
-        </filefilterlist>
+            <filefilter name="defaultFilter" desc="Files not to check">
+                <filteritem type="filepath" name="CHANGES " desc="not used in ohos"/>
+			</filefilter>	
+        </filefilterlist>	
     </oatconfig>
 </configuration>
