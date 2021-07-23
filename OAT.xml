@@ -89,8 +89,6 @@ Note:If the text contains special characters, please escape them according to th
                      languages.  A few packages already provide translations for their
                      messages.
                 " desc=""/>
-            </licensematcher>
-            <licensematcher name="FSF Unlimited License" desc="">
                 <licensetext name="
                      Free Software Foundation, Inc.
                      dnl This file is free software; the Free Software Foundation "
