@@ -98,6 +98,7 @@ Note:If the text contains special characters, please escape them according to th
         <filefilterlist>
             <filefilter name="defaultFilter" desc="Files not to check">
                 <filteritem type="filepath" name="CHANGES " desc="not used in ohos"/>
+                <filteritem type="filepath" name="Doxyfile.in " desc="not used in ohos"/>
 			</filefilter>	
         </filefilterlist>	
     </oatconfig>
