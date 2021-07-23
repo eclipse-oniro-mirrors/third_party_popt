@@ -69,6 +69,12 @@ Note:If the text contains special characters, please escape them according to th
         <licensematcherlist>
             <licensematcher name="MIT license" desc="If the scanning result is InvalidLicense, you can define matching rules here. Note that quotation marks must be escaped.">
                 <licensetext name=" Licensing details are in the COPYING" desc=""/>
+                <licensetext name="
+                     This file is distributed under the same license as the popt package.
+                " desc=""/>
+                <licensetext name=" 
+                     Licensing details are in the COPYING file" 
+                desc=""/>
             </licensematcher>
             <licensematcher name="FSF Unlimited License" desc="">
                 <licensetext name="
@@ -76,8 +82,6 @@ Note:If the text contains special characters, please escape them according to th
                      gives unlimited permission to copy and/or distribute it,
                      with or without modifications, as long as this notice is preserved.
                 " desc=""/>
-            </licensematcher>
-            <licensematcher name="FSF Unlimited License" desc="">
                 <licensetext name="
                      Free software is going international!  The Free Translation Project is
                      a way to get maintainers of free software, translators, and users all
@@ -85,16 +89,6 @@ Note:If the text contains special characters, please escape them according to th
                      languages.  A few packages already provide translations for their
                      messages.
                 " desc=""/>
-            </licensematcher>
-            <licensematcher name="MIT license" desc="">
-                <licensetext name="
-                     This file is distributed under the same license as the popt package.
-                " desc=""/>
-            </licensematcher>
-            <licensematcher name="MIT license" desc="">
-                <licensetext name=" 
-                     Licensing details are in the COPYING file" 
-                desc=""/>
             </licensematcher>
             <licensematcher name="FSF Unlimited License" desc="">
                 <licensetext name="
