@@ -127,7 +127,7 @@ Note:If the text contains special characters, please escape them according to th
 				<filteritem type="filepath" name="Doxyfile.in " desc="not used in ohos"/>
 				<filteritem type="filepath" name="test2.c " desc="not used in ohos"/>
 			</filefilter>
-			<filefliter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
+			<filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
 				<filteritem type="filename" name="*.gmo" desc="not used in ohos"/>
 				<filteritem type="filename" name="*.po" desc="not used in ohos"/>
 			</filefilter>
