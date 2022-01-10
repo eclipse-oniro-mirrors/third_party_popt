@@ -1,0 +1,39 @@
+{
+    "name": "@ohos/popt",
+    "version": "",
+    "description": "Popt is a C library for parsing command line parameters",
+    "homePage": "https://gitee.com/openharmony",
+    "license": "X Consortium",
+    "repository": "https://gitee.com/openharmony/third_party_popt",
+    "domain": "os",
+    "language": "",
+    "publishAs": "code-segment",
+    "private": false,
+    "scripts": {},
+    "tags": [
+        "third_party"
+    ],
+    "keywords": [
+        "third-party",
+        "popt"
+    ],
+    "envs": [],
+    "dirs": [],
+    "segment": {
+        "destPath": "third_party/popt"
+    },
+    "component": {
+        "name": "thirdparty_popt",
+        "subsystem": "",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [],
+        "rom": "",
+        "ram": "",
+        "build": {
+            "sub_component": [],
+            "inner_kits": [],
+            "test": []
+        }
+    }
+}
