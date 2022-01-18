@@ -29,6 +29,7 @@ static_library("popt_static") {
     "-W",
     "-ffunction-sections",
     "-fdata-sections",
+    "-Wno-unused-const-variable",
   ]
   ldflags = [
     "-Wl",
