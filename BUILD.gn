@@ -1,16 +1,25 @@
-# Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
-
+# Copyright (c) 2022 Huawei Device Co., Ltd.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 import("//build/lite/config/component/lite_component.gni")
 
 config("popt_config") {
-  include_dirs = [ "//third_party/popt" ]
+  include_dirs = [ "//third_party/popt/src" ]
 }
 
 popt_sources = [
-  "popt.c",
-  "popthelp.c",
-  "poptint.c",
-  "poptparse.c",
+  "./src/popt.c",
+  "./src/popthelp.c",
+  "./src/poptint.c",
+  "./src/poptparse.c",
 ]
 
 static_library("popt_static") {
@@ -30,6 +39,8 @@ static_library("popt_static") {
     "-ffunction-sections",
     "-fdata-sections",
     "-Wno-unused-const-variable",
+    "-Wno-unused-parameter",
+    "-Wno-gnu-alignof-expression",
   ]
   ldflags = [
     "-Wl",
