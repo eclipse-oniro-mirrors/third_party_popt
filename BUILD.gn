@@ -10,6 +10,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 import("//build/lite/config/component/lite_component.gni")
+import("//build/ohos.gni")
 
 config("popt_config") {
   include_dirs = [ "//third_party/popt/src" ]
@@ -22,7 +23,7 @@ popt_sources = [
   "./src/poptparse.c",
 ]
 
-static_library("popt_static") {
+ohos_static_library("popt_static") {
   sources = popt_sources
   output_name = "popt"
   public_configs = [ ":popt_config" ]
