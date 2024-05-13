@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: popt 1.14\n"
 "Report-Msgid-Bugs-To: <rpm-maint@lists.rpm.org>\n"
-"POT-Creation-Date: 2020-06-23 13:29+0300\n"
+"POT-Creation-Date: 2022-09-16 10:04+0300\n"
 "PO-Revision-Date: 2008-08-03 15:50-0300\n"
 "Last-Translator: Felipe Castro <fefcas@gmail.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -19,52 +19,56 @@ msgstr ""
 msgid "unknown errno"
 msgstr "nekonata erarnumero"
 
-#: src/popt.c:1206
+#: src/popt.c:1200
 #, c-format
 msgid "option type (%u) not implemented in popt\n"
 msgstr "la opcia tipo (%u) ne estas realigita en popt\n"
 
-#: src/popt.c:1625
+#: src/popt.c:1638
 msgid "missing argument"
 msgstr "mankas argumento"
 
-#: src/popt.c:1627
+#: src/popt.c:1640
+msgid "option does not take an argument"
+msgstr ""
+
+#: src/popt.c:1642
 msgid "unknown option"
 msgstr "nekonata opcio"
 
-#: src/popt.c:1629
+#: src/popt.c:1644
 msgid "mutually exclusive logical operations requested"
 msgstr "reciprokaj logikaj operacioj estas postulataj"
 
-#: src/popt.c:1631
+#: src/popt.c:1646
 msgid "opt->arg should not be NULL"
 msgstr "opt->arg ne devus esti NULL"
 
-#: src/popt.c:1633
+#: src/popt.c:1648
 msgid "aliases nested too deeply"
 msgstr "kromnomoj estas ingitaj tro profunde"
 
-#: src/popt.c:1635
+#: src/popt.c:1650
 msgid "error in parameter quoting"
 msgstr "eraro en parametra citado"
 
-#: src/popt.c:1637
+#: src/popt.c:1652
 msgid "invalid numeric value"
 msgstr "nevalida numera valoro"
 
-#: src/popt.c:1639
+#: src/popt.c:1654
 msgid "number too large or too small"
 msgstr "numero tro granda aŭ tro eta"
 
-#: src/popt.c:1641
+#: src/popt.c:1656
 msgid "memory allocation failed"
 msgstr "malsukceso dum okupado de memoro"
 
-#: src/popt.c:1643
+#: src/popt.c:1658
 msgid "config file failed sanity test"
 msgstr ""
 
-#: src/popt.c:1647
+#: src/popt.c:1662
 msgid "unknown error"
 msgstr "nekonata eraro"
 
@@ -132,10 +136,10 @@ msgstr "DOUBLE"
 msgid "ARG"
 msgstr "ARG"
 
-#: src/popthelp.c:616
+#: src/popthelp.c:615
 msgid "Usage:"
 msgstr "Uzado:"
 
-#: src/popthelp.c:638
+#: src/popthelp.c:640
 msgid "[OPTION...]"
 msgstr "[OPCIO...]"

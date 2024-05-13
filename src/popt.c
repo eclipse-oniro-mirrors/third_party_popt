@@ -1,5 +1,5 @@
 /** \ingroup popt
- * \file popt/popt.c
+ * @file
  */
 
 /* (C) 1998-2002 Red Hat, Inc. -- Licensing details are in the COPYING
@@ -168,6 +168,7 @@ poptContext poptGetContext(const char * name, int argc, const char ** argv,
 	con->os->next = 1;		/* skip argv[0] */
 
     con->leftovers = calloc( (size_t)(argc + 1), sizeof(*con->leftovers) );
+    con->allocLeftovers = argc + 1;
     con->options = options;
     con->aliases = NULL;
     con->numAliases = 0;
@@ -210,8 +211,14 @@ void poptResetContext(poptContext con)
     con->os->currAlias = NULL;
     con->os->nextCharArg = NULL;
     con->os->nextArg = _free(con->os->nextArg);
-    con->os->next = 1;			/* skip argv[0] */
+    if (!(con->flags & POPT_CONTEXT_KEEP_FIRST))
+	con->os->next = 1;		/* skip argv[0] */
+    else
+	con->os->next = 0;
 
+    for (i = 0; i < con->numLeftovers; i++) {
+        con->leftovers[i] = _free(con->leftovers[i]);
+    }
     con->numLeftovers = 0;
     con->nextLeftover = 0;
     con->restLeftover = 0;
@@ -641,7 +648,7 @@ static const char *
 expandNextArg(poptContext con, const char * s)
 {
     const char * a = NULL;
-    char *t, *te;
+    char *t, *t_tmp, *te;
     size_t tn = strlen(s) + 1;
     char c;
 
@@ -667,8 +674,11 @@ expandNextArg(poptContext con, const char * s)
 
 	    tn += strlen(a);
 	    {   size_t pos = (size_t) (te - t);
-		if ((t = realloc(t, tn)) == NULL)	/* XXX can't happen */
+		if ((t_tmp = realloc(t, tn)) == NULL) {	/* XXX can't happen */
+		    free(t);
 		    return NULL;
+		}
+		t = t_tmp;
 		te = stpcpy(t + pos, a);
 	    }
 	    continue;
@@ -904,7 +914,23 @@ int poptSaveString(const char *** argvp,
     return 0;
 }
 
-static unsigned int seed = 0;
+static long long poptRandomValue(long long limit)
+{
+#if defined(HAVE_SRANDOM)
+    static int seed = 1;
+
+    if (seed) {
+	srandom((unsigned)getpid());
+	srandom((unsigned)random());
+	seed = 0;
+    }
+
+    return random() % limit + 1;
+#else
+    /* XXX avoid adding POPT_ERROR_UNIMPLEMENTED to minimize i18n churn. */
+    return POPT_ERROR_BADOPERATION;
+#endif
+}
 
 int poptSaveLongLong(long long * arg, unsigned int argInfo, long long aLongLong)
 {
@@ -913,17 +939,9 @@ int poptSaveLongLong(long long * arg, unsigned int argInfo, long long aLongLong)
 	return POPT_ERROR_NULLARG;
 
     if (aLongLong != 0 && LF_ISSET(RANDOM)) {
-#if defined(HAVE_SRANDOM)
-	if (!seed) {
-	    srandom((unsigned)getpid());
-	    srandom((unsigned)random());
-	}
-	aLongLong = (long long)(random() % (aLongLong > 0 ? aLongLong : -aLongLong));
-	aLongLong++;
-#else
-	/* XXX avoid adding POPT_ERROR_UNIMPLEMENTED to minimize i18n churn. */
-	return POPT_ERROR_BADOPERATION;
-#endif
+	aLongLong = poptRandomValue(aLongLong);
+	if (aLongLong < 0)
+	    return aLongLong;
     }
     if (LF_ISSET(NOT))
 	aLongLong = ~aLongLong;
@@ -954,17 +972,9 @@ int poptSaveLong(long * arg, unsigned int argInfo, long aLong)
 	return POPT_ERROR_NULLARG;
 
     if (aLong != 0 && LF_ISSET(RANDOM)) {
-#if defined(HAVE_SRANDOM)
-	if (!seed) {
-	    srandom((unsigned)getpid());
-	    srandom((unsigned)random());
-	}
-	aLong = random() % (aLong > 0 ? aLong : -aLong);
-	aLong++;
-#else
-	/* XXX avoid adding POPT_ERROR_UNIMPLEMENTED to minimize i18n churn. */
-	return POPT_ERROR_BADOPERATION;
-#endif
+	aLong = (long)poptRandomValue(aLong);
+	if (aLong < 0)
+	    return aLong;
     }
     if (LF_ISSET(NOT))
 	aLong = ~aLong;
@@ -987,17 +997,9 @@ int poptSaveInt(int * arg, unsigned int argInfo, long aLong)
 	return POPT_ERROR_NULLARG;
 
     if (aLong != 0 && LF_ISSET(RANDOM)) {
-#if defined(HAVE_SRANDOM)
-	if (!seed) {
-	    srandom((unsigned)getpid());
-	    srandom((unsigned)random());
-	}
-	aLong = random() % (aLong > 0 ? aLong : -aLong);
-	aLong++;
-#else
-	/* XXX avoid adding POPT_ERROR_UNIMPLEMENTED to minimize i18n churn. */
-	return POPT_ERROR_BADOPERATION;
-#endif
+	aLong = (int)poptRandomValue(aLong);
+	if (aLong < 0)
+	    return aLong;
     }
     if (LF_ISSET(NOT))
 	aLong = ~aLong;
@@ -1020,17 +1022,9 @@ int poptSaveShort(short * arg, unsigned int argInfo, long aLong)
 	return POPT_ERROR_NULLARG;
 
     if (aLong != 0 && LF_ISSET(RANDOM)) {
-#if defined(HAVE_SRANDOM)
-	if (!seed) {
-	    srandom((unsigned)getpid());
-	    srandom((unsigned)random());
-	}
-	aLong = random() % (aLong > 0 ? aLong : -aLong);
-	aLong++;
-#else
-	/* XXX avoid adding POPT_ERROR_UNIMPLEMENTED to minimize i18n churn. */
-	return POPT_ERROR_BADOPERATION;
-#endif
+	aLong = (short)poptRandomValue(aLong);
+	if (aLong < 0)
+	    return aLong;
     }
     if (LF_ISSET(NOT))
 	aLong = ~aLong;
@@ -1269,8 +1263,21 @@ int poptGetNextOpt(poptContext con)
 		    con->os->nextArg = xstrdup(origOptString);
 		    return 0;
 		}
-		if (con->leftovers != NULL)	/* XXX can't happen */
-		    con->leftovers[con->numLeftovers++] = origOptString;
+		if (con->leftovers != NULL) {	/* XXX can't happen */
+		    /* One might think we can never overflow the leftovers
+		       array.  Actually, that's true, as long as you don't
+		       use poptStuffArgs()... */
+		    if ((con->numLeftovers + 1) >= (con->allocLeftovers)) {
+			con->allocLeftovers += 10;
+			con->leftovers =
+			    realloc(con->leftovers,
+				    sizeof(*con->leftovers) * con->allocLeftovers);
+		    }
+		    con->leftovers[con->numLeftovers++]
+			= xstrdup(origOptString); /* so a free of a stuffed
+						     argv doesn't give us a
+						     dangling pointer */
+		}
 		continue;
 	    }
 
@@ -1353,21 +1360,20 @@ int poptGetNextOpt(poptContext con)
 
 	    nextCharArg++;
 	    if (*nextCharArg != '\0')
-		con->os->nextCharArg = nextCharArg + (int)(*nextCharArg == '=');
+		con->os->nextCharArg = nextCharArg;
 	}
 
 	if (opt == NULL) return POPT_ERROR_BADOPT;	/* XXX can't happen */
-	if (opt->arg && poptArgType(opt) == POPT_ARG_NONE) {
-	    unsigned int argInfo = poptArgInfo(con, opt);
-	    if (poptSaveInt((int *)opt->arg, argInfo, 1L))
-		return POPT_ERROR_BADOPERATION;
-	} else if (poptArgType(opt) == POPT_ARG_VAL) {
+	if (poptArgType(opt) == POPT_ARG_NONE || poptArgType(opt) == POPT_ARG_VAL) {
+	    if (longArg || (con->os->nextCharArg && con->os->nextCharArg[0] == '='))
+		return POPT_ERROR_UNWANTEDARG;
 	    if (opt->arg) {
+		long val = poptArgType(opt) == POPT_ARG_VAL ? opt->val : 1;
 		unsigned int argInfo = poptArgInfo(con, opt);
-		if (poptSaveInt((int *)opt->arg, argInfo, (long)opt->val))
+		if (poptSaveInt((int *)opt->arg, argInfo, val))
 		    return POPT_ERROR_BADOPERATION;
 	    }
-	} else if (poptArgType(opt) != POPT_ARG_NONE) {
+	} else {
 	    int rc;
 
 	    con->os->nextArg = _free(con->os->nextArg);
@@ -1375,7 +1381,7 @@ int poptGetNextOpt(poptContext con)
 		longArg = expandNextArg(con, longArg);
 		con->os->nextArg = (char *) longArg;
 	    } else if (con->os->nextCharArg) {
-		longArg = expandNextArg(con, con->os->nextCharArg);
+		longArg = expandNextArg(con, con->os->nextCharArg + (int)(*con->os->nextCharArg == '='));
 		con->os->nextArg = (char *) longArg;
 		con->os->nextCharArg = NULL;
 	    } else {
@@ -1512,13 +1518,15 @@ poptItem poptFreeItems(poptItem items, int nitems)
 	    item->argv = _free(item->argv);
 	    item++;
 	}
-	items = _free(items);
+	_free(items);
     }
     return NULL;
 }
 
 poptContext poptFreeContext(poptContext con)
 {
+    int i;
+
     if (con == NULL) return con;
     poptResetContext(con);
 
@@ -1528,7 +1536,11 @@ poptContext poptFreeContext(poptContext con)
     con->execs = poptFreeItems(con->execs, con->numExecs);
     con->numExecs = 0;
 
+    for (i = 0; i < con->numLeftovers; i++) {
+        con->leftovers[i] = _free(con->leftovers[i]);
+    }
     con->leftovers = _free(con->leftovers);
+
     con->finalArgv = _free(con->finalArgv);
     con->appName = _free(con->appName);
     con->otherHelp = _free(con->otherHelp);
@@ -1559,7 +1571,7 @@ int poptAddAlias(poptContext con, struct poptAlias alias,
 
 int poptAddItem(poptContext con, poptItem newItem, int flags)
 {
-    poptItem * items, item;
+    poptItem * items, item_tmp, item;
     int * nitems;
 
     switch (flags) {
@@ -1576,9 +1588,10 @@ int poptAddItem(poptContext con, poptItem newItem, int flags)
 	break;
     }
 
-    *items = realloc((*items), ((*nitems) + 1) * sizeof(**items));
-    if ((*items) == NULL)
+    item_tmp = realloc((*items), ((*nitems) + 1) * sizeof(**items));
+    if (item_tmp == NULL)
 	return 1;
+    *items = item_tmp;
 
     item = (*items) + (*nitems);
 
@@ -1623,6 +1636,8 @@ const char * poptStrerror(const int error)
     switch (error) {
       case POPT_ERROR_NOARG:
 	return POPT_("missing argument");
+      case POPT_ERROR_UNWANTEDARG:
+	return POPT_("option does not take an argument");
       case POPT_ERROR_BADOPT:
 	return POPT_("unknown option");
       case POPT_ERROR_BADOPERATION:

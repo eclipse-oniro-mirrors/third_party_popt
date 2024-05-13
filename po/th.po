@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: popt 1.14\n"
 "Report-Msgid-Bugs-To: <rpm-maint@lists.rpm.org>\n"
-"POT-Creation-Date: 2020-06-23 13:29+0300\n"
+"POT-Creation-Date: 2022-09-16 10:04+0300\n"
 "PO-Revision-Date: 2008-02-19 15:53+0700\n"
 "Last-Translator: Seksan Poltree <seksan.poltree@gmail.com>\n"
 "Language-Team: Thai <translation-team-th@lists.sourceforge.net>\n"
@@ -21,52 +21,56 @@ msgstr ""
 msgid "unknown errno"
 msgstr "เกิด errno ที่ไม่รู้จัก"
 
-#: src/popt.c:1206
+#: src/popt.c:1200
 #, c-format
 msgid "option type (%u) not implemented in popt\n"
 msgstr "ตัวเลือกชนิด (%u) ไม่ถูกอิมพลีเมนต์ใน popt\n"
 
-#: src/popt.c:1625
+#: src/popt.c:1638
 msgid "missing argument"
 msgstr "ไม่พบอาร์กิวเมนต์"
 
-#: src/popt.c:1627
+#: src/popt.c:1640
+msgid "option does not take an argument"
+msgstr ""
+
+#: src/popt.c:1642
 msgid "unknown option"
 msgstr "ไม่รู้จักตัวเลือก"
 
-#: src/popt.c:1629
+#: src/popt.c:1644
 msgid "mutually exclusive logical operations requested"
 msgstr "เกิดการร้องขอร่วมกันของการดำเนินการด้านตรรกะอย่างเดียวกัน"
 
-#: src/popt.c:1631
+#: src/popt.c:1646
 msgid "opt->arg should not be NULL"
 msgstr "opt->arg ไม่ควรจะเป็น NULL"
 
-#: src/popt.c:1633
+#: src/popt.c:1648
 msgid "aliases nested too deeply"
 msgstr "นามแฝงซ้อนกันมากเกินไป"
 
-#: src/popt.c:1635
+#: src/popt.c:1650
 msgid "error in parameter quoting"
 msgstr "เกิดข้อผิดพลาดในการอ้างอิงพารามิเตอร์"
 
-#: src/popt.c:1637
+#: src/popt.c:1652
 msgid "invalid numeric value"
 msgstr "ค่าตัวเลขผิดพลาด"
 
-#: src/popt.c:1639
+#: src/popt.c:1654
 msgid "number too large or too small"
 msgstr "ตัวเลขมีค่ามากหรือน้อยเกินไป"
 
-#: src/popt.c:1641
+#: src/popt.c:1656
 msgid "memory allocation failed"
 msgstr "การจัดสรรหน่วยความจำผิดพลาด"
 
-#: src/popt.c:1643
+#: src/popt.c:1658
 msgid "config file failed sanity test"
 msgstr ""
 
-#: src/popt.c:1647
+#: src/popt.c:1662
 msgid "unknown error"
 msgstr "ความผิดพลาดที่ไม่รู้จัก"
 
@@ -134,10 +138,10 @@ msgstr "DOUBLE"
 msgid "ARG"
 msgstr "ARG"
 
-#: src/popthelp.c:616
+#: src/popthelp.c:615
 msgid "Usage:"
 msgstr "วิธีใช้:"
 
-#: src/popthelp.c:638
+#: src/popthelp.c:640
 msgid "[OPTION...]"
 msgstr "[ตัวเลือก...]"

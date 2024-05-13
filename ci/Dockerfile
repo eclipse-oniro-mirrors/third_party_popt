@@ -1,4 +1,4 @@
-FROM fedora:latest
+FROM registry.fedoraproject.org/fedora:36
 MAINTAINER rpm-maint@lists.rpm.org
 
 WORKDIR /srv/popt
@@ -18,8 +18,8 @@ RUN dnf -y install \
 
 COPY . .
 
-RUN autoreconf -vi
-RUN ./configure
+RUN ./autogen.sh
+RUN ./configure --enable-werror CFLAGS="-Wall -Wdeclaration-after-statement -Wextra -Wmissing-format-attribute -Wmissing-noreturn -Wno-gnu-alignof-expression -Wpointer-arith -Wshadow -Wstrict-prototypes -Wundef -Wunused -Wwrite-strings"
 RUN make
 
-CMD make distcheck
+CMD make distcheck DISTCHECK_CONFIGURE_FLAGS=--enable-werror

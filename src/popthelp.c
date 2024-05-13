@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 
 /** \ingroup popt
- * \file popt/popthelp.c
+ * @file
  */
 
 /* (C) 1998-2002 Red Hat, Inc. -- Licensing details are in the COPYING
@@ -15,8 +15,7 @@
 #include <sys/ioctl.h>
 #endif
 
-#define	POPT_WCHAR_HACK
-#ifdef 	POPT_WCHAR_HACK
+#ifdef HAVE_MBSRTOWCS
 #include <wchar.h>			/* for mbsrtowcs */
 #endif
 #include "poptint.h"
@@ -30,6 +29,7 @@
  * @param arg		(unused)
  * @param data		(unused)
  */
+NORETURN
 static void displayArgs(poptContext con,
 		UNUSED(enum poptCallbackReason foo),
 		struct poptOption * key, 
@@ -41,7 +41,7 @@ static void displayArgs(poptContext con,
     else
 	poptPrintUsage(con, stdout, 0);
 
-    con = poptFreeContext(con);
+    poptFreeContext(con);
     exit(0);
 }
 
@@ -67,7 +67,7 @@ struct poptOption poptHelpOptions[] = {
 } ;
 
 static struct poptOption poptHelpOptions2[] = {
-  { NULL, '\0', POPT_ARG_INTL_DOMAIN, PACKAGE, 0, NULL, NULL},
+  { NULL, '\0', POPT_ARG_INTL_DOMAIN, (void *)PACKAGE, 0, NULL, NULL},
   { NULL, '\0', POPT_ARG_CALLBACK, (void *)displayArgs, 0, NULL, NULL },
   { "help", '?', 0, NULL, (int)'?', N_("Show this help message"), NULL },
   { "usage", '\0', 0, NULL, (int)'u', N_("Display brief usage message"), NULL },
@@ -118,7 +118,7 @@ static size_t maxColumnWidth(FILE *fp)
 static inline size_t stringDisplayWidth(const char *s)
 {
     size_t n = strlen(s);
-#ifdef	POPT_WCHAR_HACK
+#ifdef HAVE_MBSRTOWCS
     mbstate_t t;
 
     memset ((void *)&t, 0, sizeof (t));	/* In initial state.  */
@@ -312,7 +312,7 @@ static void singleOptionHelp(FILE * fp, columns_t columns,
     if (!(prtshort || prtlong))
 	goto out;
     if (prtshort && prtlong) {
-	char *dash = F_ISSET(opt, ONEDASH) ? "-" : "--";
+	const char *dash = F_ISSET(opt, ONEDASH) ? "-" : "--";
 	left[0] = '-';
 	left[1] = opt->shortName;
 	(void) stpcpy(stpcpy(stpcpy(left+2, ", "), dash), opt->longName);
@@ -322,8 +322,8 @@ static void singleOptionHelp(FILE * fp, columns_t columns,
 	left[2] = '\0';
     } else if (prtlong) {
 	/* XXX --long always padded for alignment with/without "-X, ". */
-	char *dash = poptArgType(opt) == POPT_ARG_MAINCALL ? ""
-		   : (F_ISSET(opt, ONEDASH) ? "-" : "--");
+	const char *dash = poptArgType(opt) == POPT_ARG_MAINCALL ? ""
+			 : (F_ISSET(opt, ONEDASH) ? "-" : "--");
 	const char *longName = opt->longName;
 	const char *toggle;
 	if (F_ISSET(opt, TOGGLE)) {
@@ -416,7 +416,8 @@ static void singleOptionHelp(FILE * fp, columns_t columns,
 	    /* XXX argDescrip[0] determines "--foo=bar" or "--foo bar". */
 	    if (!strchr(" =(", argDescrip[0]))
 		*le++ = ((poptArgType(opt) == POPT_ARG_MAINCALL) ? ' ' :
-			 (poptArgType(opt) == POPT_ARG_ARGV) ? ' ' : '=');
+			 (poptArgType(opt) == POPT_ARG_ARGV) ? ' ' :
+			 opt->longName == NULL ? ' ' : '=');
 	    le = stpcpy(leo = le, argDescrip);
 
 	    /* Adjust for (possible) wide characters. */
@@ -611,9 +612,10 @@ static void singleTableHelp(poptContext con, FILE * fp,
  */
 static size_t showHelpIntro(poptContext con, FILE * fp)
 {
-    size_t len = (size_t)6;
+    const char *usage_str = POPT_("Usage:");
+    size_t len = strlen(usage_str);
+    POPT_fprintf(fp, "%s", usage_str);
 
-    POPT_fprintf(fp, POPT_("Usage:"));
     if (!(con->flags & POPT_CONTEXT_KEEP_FIRST)) {
 	struct optionStackEntry * os = con->optionStack;
 	const char * fn = (os->argv ? os->argv[0] : NULL);
@@ -700,7 +702,7 @@ static size_t singleOptionUsage(FILE * fp, columns_t columns,
 
     if (argDescrip) {
 	/* XXX argDescrip[0] determines "--foo=bar" or "--foo bar". */
-	if (!strchr(" =(", argDescrip[0])) fprintf(fp, "=");
+	if (!strchr(" =(", argDescrip[0])) fputc(opt->longName == NULL ? ' ' : '=', fp);
 	fprintf(fp, "%s", argDescrip);
     }
     fprintf(fp, "]");

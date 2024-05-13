@@ -15,7 +15,7 @@ static void option_callback(UNUSED(poptContext con),
 }
 
 static int arg1 = 0;
-static char * arg2 = "(none)";
+static const char * arg2 = "(none)";
 static int arg3 = 0;
 static int inc = 0;
 static int shortopt = 0;
@@ -33,8 +33,8 @@ static long aLong = 738905609L;
 static long bLong = 738905609L;
 static long long aLongLong = 738905609LL;
 static long long bLongLong = 738905609LL;
-static float aFloat = 3.1415926535;
-static float bFloat = 3.1415926535;
+static float aFloat = 3.1415926535f;
+static float bFloat = 3.1415926535f;
 static double aDouble = 9.86960440108935861883;
 static double bDouble = 9.86960440108935861883;
 
@@ -48,7 +48,7 @@ static size_t nattributes = (sizeof(attributes) / sizeof(attributes[0]));
 static char * oStr = (char *) -1;
 static int singleDash = 0;
 
-static char * lStr =
+static const char * lStr =
 "This tests default strings and exceeds the ... limit. "
 "123456789+123456789+123456789+123456789+123456789+ "
 "123456789+123456789+123456789+123456789+123456789+ "
@@ -132,7 +132,7 @@ static struct poptOption options[] = {
 	"POPT_BIT_SET: |= 0x7777", 0},
   { "bitclr", '\0', POPT_BIT_CLR | POPT_ARGFLAG_TOGGLE | POPT_ARGFLAG_SHOW_DEFAULT, &aFlag, 0xf842,
 	"POPT_BIT_CLR: &= ~0xf842", 0},
-  { "bitxor", '\0', POPT_ARG_VAL | POPT_ARGFLAG_XOR | POPT_ARGFLAG_SHOW_DEFAULT, &aFlag, (0x8ace^0xfeed),
+  { "bitxor", 'x', POPT_ARG_VAL | POPT_ARGFLAG_XOR | POPT_ARGFLAG_SHOW_DEFAULT, &aFlag, (0x8ace^0xfeed),
 	"POPT_ARGFLAG_XOR: ^= (0x8ace^0xfeed)", 0},
 
   { "nstr", '\0', POPT_ARG_STRING | POPT_ARGFLAG_SHOW_DEFAULT, &nStr, 0,
@@ -209,7 +209,7 @@ int main(int argc, const char ** argv)
 
 #if 1
     while ((rc = poptGetNextOpt(optCon)) > 0)	/* Read all the options ... */
-	{};
+	{}
 
     poptResetContext(optCon);			/* ... and then start over. */
     resetVars();

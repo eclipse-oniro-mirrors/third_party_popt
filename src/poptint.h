@@ -1,5 +1,5 @@
 /** \ingroup popt
- * \file popt/poptint.h
+ * @file
  */
 
 /* (C) 1998-2000 Red Hat, Inc. -- Licensing details are in the COPYING
@@ -33,7 +33,7 @@ typedef struct {
 } pbm_set;
 #define	__PBM_BITS(set)	((set)->bits)
 
-#define	PBM_ALLOC(d)	calloc(__PBM_IX (d) + 1, sizeof(__pbm_bits))
+#define	PBM_ALLOC(d)	calloc(__PBM_IX (d) + 1, sizeof(pbm_set))
 #define	PBM_FREE(s)	_free(s);
 #define PBM_SET(d, s)   (__PBM_BITS (s)[__PBM_IX (d)] |= __PBM_MASK (d))
 #define PBM_CLR(d, s)   (__PBM_BITS (s)[__PBM_IX (d)] &= ~__PBM_MASK (d))
@@ -94,6 +94,7 @@ struct poptContext_s {
     struct optionStackEntry * os;
     poptArgv leftovers;
     int numLeftovers;
+    int allocLeftovers;
     int nextLeftover;
     const struct poptOption * options;
     int restLeftover;
@@ -126,6 +127,7 @@ struct poptContext_s {
 char *POPT_dgettext(const char * dom, const char * str);
 #endif
 
+FORMAT(printf, 2, 3)
 int   POPT_fprintf (FILE* stream, const char *format, ...);
 #endif	/* !defined(POPT_fprintf) */
 
@@ -144,7 +146,7 @@ const char *POPT_next_char (const char *str);
 #define _(foo) foo
 #endif
 
-#if defined(ENABLE_NLS) && defined(HAVE_DCGETTEXT)
+#if defined(ENABLE_NLS) && defined(HAVE_LIBINTL_H) && defined(HAVE_DCGETTEXT)
 #define D_(dom, str) POPT_dgettext(dom, str)
 #define POPT_(foo) D_("popt", foo)
 #else

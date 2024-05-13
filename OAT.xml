@@ -100,7 +100,7 @@ Note:If the text contains special characters, please escape them according to th
 			<filefilter name="defaultFilter" desc="Files not to check">
 				<filteritem type="filepath" name="tests/test3-data/.* " desc="test file"/>
 				<filteritem type="filepath" name="po/*.* " desc="License and Copyright Header are null"/>
-				<filteritem type="filename" name="autogen.sh|Makefile.am|Dockerfile|testit.sh|configure.ac|.popt|libpopt.vers|README.OpenSource" desc="License and Copyright Header are null"/>
+				<filteritem type="filename" name="autogen.sh|Makefile.am|Dockerfile|testit.sh|configure.ac|.popt|libpopt.vers|README.OpenSource|CREDITS" desc="License and Copyright Header are null"/>
 				<filteritem type="filename" name="test3.c|lookup3.c|poptint.c|system.h|tdict.c" desc="License and Copyright Header are null"/>
 			</filefilter>
 			<filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">

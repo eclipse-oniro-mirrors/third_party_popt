@@ -5,12 +5,11 @@ run() {
     name=$1; shift
     answer=$1; shift
 
-    echo Running test $name.
-
     result=`HOME=$builddir $builddir/$prog $*`
     if [ "$answer" != "$result" ]; then
-	echo "Test \"$prog $*\" failed with: \"$result\" != \"$answer\" "
-	exit 2
+        echo "FAIL: $name: \"$result\" != \"$answer\" "
+    else
+        echo "PASS: $name"
     fi
 }
 
@@ -23,26 +22,23 @@ run_diff() {
     out=$builddir/tmp.out
     diff_file=$builddir/tmp.diff
 
-    echo Running test $name.
-
     $builddir/$prog $in_file > $out
     ret=$?
     diff $out $answer_file > $diff_file
     diff_ret=$?
 
     if [ "$diff_ret" != "0" ]; then
-       echo "Test \"$name\" failed output is in $out, diff is:"
+       echo "FAIL $name: failed output is in $out, diff is:"
        cat $diff_file
-       exit 2
+    else
+        echo "PASS $name"
     fi
     rm $out $diff_file
 }
 
 builddir=`pwd`
-srcdir=$builddir
-cd ${srcdir}
-test1=${builddir}/test1
-echo "Running tests in `pwd`"
+cd ${builddir}
+echo "Running tests in ${builddir}"
 
 #make -q testcases
 
@@ -115,16 +111,16 @@ run test1 "test1 - 56" "arg1: 0 arg2: (none) aFlag: 0xface" --nobitclr
 run test1 "test1 - 57" "arg1: 0 arg2: (none) aBits: foo,baz" --bits foo,bar,baz,!bar
 
 run test1 "test1 - 58" "\
-Usage: lt-test1 [-I?] [-c|--cb2=STRING] [--arg1] [-2|--arg2=ARG]
+Usage: test1 [-I?] [-c|--cb2=STRING] [--arg1] [-2|--arg2=ARG]
         [-3|--arg3=ANARG] [-onedash] [--optional=STRING] [--val]
         [-i|--int=INT] [-s|--short=SHORT] [-l|--long=LONG]
         [-L|--longlong=LONGLONG] [-f|--float=FLOAT] [-d|--double=DOUBLE]
         [--randint=INT] [--randshort=SHORT] [--randlong=LONG]
         [--randlonglong=LONGLONG] [--argv=STRING] [--bitset] [--bitclr]
-        [--bitxor] [--nstr=STRING] [--lstr=STRING] [-I|--inc]
+        [-x|--bitxor] [--nstr=STRING] [--lstr=STRING] [-I|--inc]
         [-c|--cb=STRING] [--longopt] [-?|--help] [--usage] [--simple=ARG]" --usage
 run test1 "test1 - 59" "\
-Usage: lt-test1 [OPTION...]
+Usage: test1 [OPTION...]
       --arg1                      First argument with a really long
                                   description. After all, we have to test
                                   argument help wrapping somehow, right?
@@ -149,7 +145,7 @@ Usage: lt-test1 [OPTION...]
                                   (can be used multiple times)
       --[no]bitset                POPT_BIT_SET: |= 0x7777
       --[no]bitclr                POPT_BIT_CLR: &= ~0xf842
-      --bitxor                    POPT_ARGFLAG_XOR: ^= (0x8ace^0xfeed)
+  -x, --bitxor                    POPT_ARGFLAG_XOR: ^= (0x8ace^0xfeed)
       --nstr=STRING               POPT_ARG_STRING: (null) (default: null)
       --lstr=STRING               POPT_ARG_STRING: \"123456789...\" (default:
                                   \"This tests default strings and exceeds the
@@ -171,9 +167,18 @@ Help options:
   -?, --help                      Show this help message
       --usage                     Display brief usage message" --help
 
-#run_diff test3 "test3 - 51" test3-data/01.input test3-data/01.answer
-#run_diff test3 "test3 - 52" test3-data/02.input test3-data/02.answer
-#run_diff test3 "test3 - 53" test3-data/03.input test3-data/03.answer
+run test1 "test1 - 60" "" --val=foo
+run test1 "test1 - 61" "" -x=f1
+
+run test1 "test1 - 62" "arg1: 0 arg2: (none) aInt: 1" --randint=-1
+
+if ! [ -e test3-data ]; then
+  # create symlink for running during 'make distcheck'
+  ln -s "${srcdir}/test3-data" test3-data
+fi
+run_diff test3 "test3 - 1" test3-data/01.input test3-data/01.answer
+run_diff test3 "test3 - 2" test3-data/02.input test3-data/02.answer
+run_diff test3 "test3 - 3" test3-data/03.input test3-data/03.answer
 
 echo ""
 echo "Passed."
