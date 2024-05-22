@@ -1,5 +1,5 @@
 /** \ingroup popt
- * \file popt/poptparse.c
+ * @file
  */
 
 /* (C) 1998-2002 Red Hat, Inc. -- Licensing details are in the COPYING
@@ -57,6 +57,7 @@ int poptParseArgvString(const char * s, int * argcPtr, const char *** argvPtr)
     char quote = '\0';
     int argvAlloced = POPT_ARGV_ARRAY_GROW_DELTA;
     const char ** argv = malloc(sizeof(*argv) * argvAlloced);
+    const char ** argv_tmp;
     int argc = 0;
     size_t buflen = strlen(s) + 1;
     char * buf, * bufOrig = NULL;
@@ -88,8 +89,9 @@ int poptParseArgvString(const char * s, int * argcPtr, const char *** argvPtr)
 		buf++, argc++;
 		if (argc == argvAlloced) {
 		    argvAlloced += POPT_ARGV_ARRAY_GROW_DELTA;
-		    argv = realloc(argv, sizeof(*argv) * argvAlloced);
-		    if (argv == NULL) goto exit;
+		    argv_tmp = realloc(argv, sizeof(*argv) * argvAlloced);
+		    if (argv_tmp == NULL) goto exit;
+		    argv = argv_tmp;
 		}
 		argv[argc] = buf;
 	    }
@@ -124,7 +126,7 @@ exit:
 }
 
 /* still in the dev stage.
- * return values, perhaps 1== file erro
+ * return values, perhaps 1== file error
  * 2== line to long
  * 3== umm.... more?
  */
@@ -133,6 +135,7 @@ int poptConfigFileToString(FILE *fp, char ** argstrp,
 {
     char line[999];
     char * argstr;
+    char * argstr_tmp;
     char * p;
     char * q;
     char * x;
@@ -186,8 +189,12 @@ int poptConfigFileToString(FILE *fp, char ** argstrp,
 	    argvlen += (t = (size_t)(q - p)) + (sizeof(" --")-1);
 	    if (argvlen >= maxargvlen) {
 		maxargvlen = (t > maxargvlen) ? t*2 : maxargvlen*2;
-		argstr = realloc(argstr, maxargvlen);
-		if (argstr == NULL) return POPT_ERROR_MALLOC;
+		argstr_tmp = realloc(argstr, maxargvlen);
+		if (argstr_tmp == NULL) {
+		    free(argstr);
+		    return POPT_ERROR_MALLOC;
+		}
+		argstr = argstr_tmp;
 	    }
 	    strcat(argstr, " --");
 	    strcat(argstr, p);
@@ -215,8 +222,12 @@ int poptConfigFileToString(FILE *fp, char ** argstrp,
 	argvlen += t + (sizeof("' --='")-1);
 	if (argvlen >= maxargvlen) {
 	    maxargvlen = (t > maxargvlen) ? t*2 : maxargvlen*2;
-	    argstr = realloc(argstr, maxargvlen);
-	    if (argstr == NULL) return POPT_ERROR_MALLOC;
+	    argstr_tmp = realloc(argstr, maxargvlen);
+	    if (argstr_tmp == NULL) {
+		free(argstr);
+		return POPT_ERROR_MALLOC;
+	    }
+	    argstr = argstr_tmp;
 	}
 	strcat(argstr, " --");
 	strcat(argstr, p);

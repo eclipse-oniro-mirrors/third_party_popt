@@ -1,5 +1,5 @@
 /** \ingroup popt
- * \file popt/poptconfig.c
+ * @file
  */
 
 /* (C) 1998-2002 Red Hat, Inc. -- Licensing details are in the COPYING
@@ -21,7 +21,7 @@
 #if defined(HAVE_GLOB_H)
 #include <glob.h>
 
-#if !defined(__GLIBC__)
+#if !defined(HAVE_GLOB_PATTERN_P)
 /* Return nonzero if PATTERN contains any metacharacters.
    Metacharacters can be quoted with backslashes if QUOTE is nonzero.  */
 static int
@@ -136,13 +136,17 @@ int poptReadFile(const char * fn, char ** bp, size_t * nbp, int flags)
 	goto exit;
 
     if ((nb = lseek(fdno, 0, SEEK_END)) == (off_t)-1
+     || (uintmax_t)nb >= SIZE_MAX
      || lseek(fdno, 0, SEEK_SET) == (off_t)-1
      || (b = calloc(sizeof(*b), (size_t)nb + 1)) == NULL
      || read(fdno, (char *)b, (size_t)nb) != (ssize_t)nb)
     {
 	int oerrno = errno;
 	(void) close(fdno);
-	errno = oerrno;
+	if (nb != (off_t)-1 && (uintmax_t)nb >= SIZE_MAX)
+	    errno = -EOVERFLOW;
+	else
+	    errno = oerrno;
 	goto exit;
     }
     if (close(fdno) == -1)
@@ -340,13 +344,15 @@ int poptReadConfigFile(poptContext con, const char * fn)
     char * b = NULL, *be;
     size_t nb = 0;
     const char *se;
-    char *t, *te;
+    char *t = NULL, *te;
     int rc;
 
     if ((rc = poptReadFile(fn, &b, &nb, POPT_READFILE_TRIMNEWLINES)) != 0)
 	return (errno == ENOENT ? 0 : rc);
-    if (b == NULL || nb == 0)
-	return POPT_ERROR_BADCONFIG;
+    if (b == NULL || nb == 0) {
+	rc = POPT_ERROR_BADCONFIG;
+	goto exit;
+    }
 
     if ((t = malloc(nb + 1)) == NULL)
 	goto exit;

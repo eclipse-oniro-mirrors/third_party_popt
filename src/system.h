@@ -1,5 +1,5 @@
 /**
- * \file popt/system.h
+ * @file
  */
 
 #ifdef HAVE_CONFIG_H
@@ -9,7 +9,7 @@
 #include <ctype.h>
 
 /* XXX isspace(3) has i18n encoding signednesss issues on Solaris. */
-#define	_isspaceptr(_chp)	isspace((int)(*(unsigned char *)(_chp)))
+#define	_isspaceptr(_chp)	isspace((int)(*(unsigned const char *)(_chp)))
 
 #ifdef HAVE_MCHECK_H
 #include <mcheck.h>
@@ -63,5 +63,7 @@ static inline char * stpcpy (char *dest, const char * src) {
 #define __attribute__(x) 
 #endif
 #define UNUSED(x) x __attribute__((__unused__))
+#define FORMAT(a, b, c) __attribute__((__format__ (a, b, c)))
+#define NORETURN __attribute__((__noreturn__))
 
 #include "popt.h"
