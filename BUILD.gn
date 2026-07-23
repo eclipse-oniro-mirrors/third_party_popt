@@ -34,6 +34,7 @@ popt_sources = [
 ohos_static_library("popt_static") {
   sources = popt_sources
   output_name = "popt"
+  branch_protector_ret = "pac_ret"
   public_configs = [ ":popt_config" ]
   defines = [
     "HAVE_CONFIG_H",
